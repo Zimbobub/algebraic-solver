@@ -12,6 +12,19 @@ pub enum Token {
     RBracket
 }
 
+
+impl Token {
+    pub fn precedence(&self) -> u8 {
+        return match self {
+            Token::Mul | Token::Div => 2,
+            Token::Add | Token::Sub => 1,
+            _ => 0
+        };
+    }
+}
+
+
+
 pub fn parse(src: &str) -> Vec<Token> {
     let mut output: Vec<Token> = Vec::new();
 

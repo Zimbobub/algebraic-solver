@@ -1,3 +1,7 @@
+use std::fmt::Display;
+
+#[derive(Debug, Clone)]
+pub struct Tokens(pub Vec<Token>);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Token {
@@ -25,7 +29,7 @@ impl Token {
 
 
 
-pub fn parse(src: &str) -> Vec<Token> {
+pub fn parse(src: &str) -> Tokens {
     let mut output: Vec<Token> = Vec::new();
 
     let mut char_iter = src.chars().peekable();
@@ -55,5 +59,30 @@ pub fn parse(src: &str) -> Vec<Token> {
         }
     }
 
-    return output;
+    return Tokens(output);
+}
+
+impl Display for Tokens {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        return write!(f, "{}", &self.0
+            .iter().map(|token| token.to_string()).reduce(|acc, s| acc + &s).unwrap()
+        );
+    }
+}
+
+impl Display for Token {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            Token::Variable(x) => x.to_string(),
+            Token::Number(n) => n.to_string(),
+            Token::Equals => "=".to_string(),
+            Token::Add => "+".to_string(),
+            Token::Sub => "-".to_string(),
+            Token::Mul => "*".to_string(),
+            Token::Div => "/".to_string(),
+            Token::LBracket => "(".to_string(),
+            Token::RBracket => ")".to_string(),
+        };
+        return write!(f,"{}", s);
+    }
 }

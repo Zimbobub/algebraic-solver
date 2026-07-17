@@ -1,3 +1,7 @@
+mod parser;
+
+
 fn main() {
-    println!("Hello, world!");
+    let src = "1+x=2";
+    println!("{:?}", parser::parse(src));
 }

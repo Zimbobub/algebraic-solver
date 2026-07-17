@@ -4,7 +4,9 @@ mod tree;
 
 fn main() {
     let src = "1+x=2";
-    let (left_src, right_src) = split(src).expect("No equals sign");
+
+    let (left_src, right_src) = src.split_once('=').expect("No equals sign");
+    if right_src.contains('=') { panic!("More than one equals sign"); }
 
     let left_infix = parser::parse(left_src);
     let right_infix = parser::parse(right_src);
@@ -13,10 +15,8 @@ fn main() {
 
     let left_postfix = postfix::postfix(left_infix);
     let right_postfix = postfix::postfix(right_infix);
+
+    println!("{:?} {:?}", left_postfix, right_postfix);
 }
 
 
-
-fn split(src: &str) -> Option<(&str, &str)> {
-    return Some(src.split_at(src.find('=')?));
-}

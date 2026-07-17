@@ -65,7 +65,7 @@ pub fn parse(src: &str) -> Tokens {
 impl Display for Tokens {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         return write!(f, "{}", &self.0
-            .iter().map(|token| token.to_string()).reduce(|acc, s| acc + &s).unwrap()
+            .iter().map(|token| token.to_string()).reduce(|acc, s| acc + &s).unwrap_or(String::new())
         );
     }
 }

@@ -43,3 +43,35 @@ pub fn postfix(infix: Tokens) -> Tokens {
 }
 
 
+
+
+#[cfg(test)]
+mod postfix_test {
+    use super::*;
+    use crate::parser;
+
+    fn convert(src: &str) -> String {
+        let infix = parser::parse(src);
+        let postfix = postfix(infix);
+
+        let mut postfix_string = String::new();
+        write!(postfix_string, "{}", postfix).unwrap();
+
+        return postfix_string;
+    }
+
+    #[test]
+    fn postfix_simple() {
+        assert_eq!(convert("1+1"), "11+");
+    }
+
+    #[test]
+    fn postfix_precedence() {
+        assert_eq!(convert("a+b*c+d"), "abc*+d+");
+    }
+
+    #[test]
+    fn postfix_parentheses() {
+        assert_eq!(convert("a*(b+c)/d"), "abc+*d/");
+    }
+}

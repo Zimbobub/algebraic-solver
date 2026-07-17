@@ -12,6 +12,7 @@ pub enum Token {
     Sub,
     Mul,
     Div,
+    Pow,
     LBracket,
     RBracket
 }
@@ -20,10 +21,15 @@ pub enum Token {
 impl Token {
     pub fn precedence(&self) -> u8 {
         return match self {
+            Token::Pow => 3,
             Token::Mul | Token::Div => 2,
             Token::Add | Token::Sub => 1,
             _ => 0
         };
+    }
+
+    pub fn is_right_associative(&self) -> bool {
+        return *self == Token::Pow;
     }
 }
 
@@ -41,6 +47,7 @@ pub fn parse(src: &str) -> Tokens {
             Some('-') => output.push(Token::Sub),
             Some('*') => output.push(Token::Mul),
             Some('/') => output.push(Token::Div),
+            Some('^') => output.push(Token::Pow),
             Some('(') => output.push(Token::LBracket),
             Some(')') => output.push(Token::RBracket),
             Some(x) => {
@@ -80,6 +87,7 @@ impl Display for Token {
             Token::Sub => "-".to_string(),
             Token::Mul => "*".to_string(),
             Token::Div => "/".to_string(),
+            Token::Pow => "^".to_string(),
             Token::LBracket => "(".to_string(),
             Token::RBracket => ")".to_string(),
         };

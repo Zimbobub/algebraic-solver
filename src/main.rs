@@ -1,4 +1,4 @@
-mod parser;
+mod token;
 mod postfix;
 mod tree;
 
@@ -8,8 +8,8 @@ fn main() {
     let (left_src, right_src) = src.split_once('=').expect("No equals sign");
     if right_src.contains('=') { panic!("More than one equals sign"); }
 
-    let left_infix = parser::parse(left_src);
-    let right_infix = parser::parse(right_src);
+    let left_infix = token::parse(left_src);
+    let right_infix = token::parse(right_src);
 
     println!("{} {}", left_infix, right_infix);
 

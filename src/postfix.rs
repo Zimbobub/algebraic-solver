@@ -1,4 +1,4 @@
-use crate::parser::{Token, Tokens};
+use crate::token::{Token, Tokens};
 use std::fmt::Write;
 
 
@@ -48,10 +48,10 @@ pub fn postfix(infix: Tokens) -> Tokens {
 #[cfg(test)]
 mod postfix_test {
     use super::*;
-    use crate::parser;
+    use crate::token;
 
     fn convert(src: &str) -> String {
-        let infix = parser::parse(src);
+        let infix = token::parse(src);
         let postfix = postfix(infix);
 
         let mut postfix_string = String::new();

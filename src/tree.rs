@@ -1,4 +1,4 @@
-use crate::parser::Token;
+use crate::token::Token;
 
 
 

@@ -1,5 +1,4 @@
 use crate::token::{Token, Tokens};
-use std::fmt::Write;
 
 
 
@@ -53,11 +52,7 @@ mod postfix_test {
     fn convert(src: &str) -> String {
         let infix = token::parse(src);
         let postfix = postfix(infix);
-
-        let mut postfix_string = String::new();
-        write!(postfix_string, "{}", postfix).unwrap();
-
-        return postfix_string;
+        return postfix.to_string();
     }
 
     #[test]

@@ -13,6 +13,39 @@ impl Equation {
     pub fn new(left: Expr, right: Expr) -> Self {
         return Equation { left: Box::new(left), right: Box::new(right) };
     }
+
+    pub fn rearrange_towards(&mut self, variable: char) -> Option<(Operation, Expr)> {
+        let variable_on_right = self.search_for_variable(variable)?;
+
+        if variable_on_right {
+            match self.right {
+                Expr::BinOp(b) => {
+                    let variable_on_left = b.left.search_var(variable);
+                    match (variable_on_left, b.operation) {
+                        
+                    }
+                },
+                _ => None
+            }
+        } else {
+
+        }        
+    }
+
+    /// - none if not on left or right
+    /// - false if on left
+    /// - true if on right
+    fn search_for_variable(&self, variable: char) -> Option<bool> {
+        let variable_on_left = self.left.search_var(variable);
+        let variable_on_right = self.right.search_var(variable);
+
+        return match (variable_on_left, variable_on_right) {
+            (true, true) => panic!("variable both on left and right not yet implemented"),
+            (true, false) => Some(false),
+            (false, true) => Some(true),
+            (false, false) => None
+        };
+    }
 }
 
 #[derive(Debug)]
@@ -52,6 +85,21 @@ impl Expr {
 
         return stack.pop().unwrap();
     }
+
+    /// search for a variable within this expression and sub-expressions
+    pub fn search_var(&self, search_term: char) -> bool {
+        match self {
+            Expr::BinOp(e,) => {
+                return e.left.search_var(search_term) || e.right.search_var(search_term);
+            },
+            Expr::Int(_) => {
+                return false
+            },
+            Expr::Var(x) => {
+                return *x == search_term
+            } 
+        }
+    }
 }
 
 
@@ -68,6 +116,28 @@ pub enum Operation {
     Sub,
     Mul,
     Div
+}
+
+impl Operation {
+    pub fn opposite(&self) -> Self {
+        match self {
+            Operation::Add => Operation::Sub,
+            Operation::Sub => Operation::Add,
+            Operation::Mul => Operation::Div,
+            Operation::Div => Operation::Mul,
+        }
+    }
+}
+
+impl Display for Operation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        return match self {
+            Operation::Add => write!(f, "+"),
+            Operation::Sub => write!(f, "-"),
+            Operation::Mul => write!(f, "*"),
+            Operation::Div => write!(f, "/"),
+        };
+    }
 }
 
 

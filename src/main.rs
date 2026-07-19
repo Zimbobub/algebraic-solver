@@ -13,20 +13,21 @@ fn main() {
 
     let left_infix = token::parse(left_src);
     let right_infix = token::parse(right_src);
-
     println!("{} {}", left_infix, right_infix);
 
     let left_postfix = postfix::postfix(left_infix);
     let right_postfix = postfix::postfix(right_infix);
-
     println!("{} {}", left_postfix, right_postfix);
 
     let left_expr = Expr::new(left_postfix);
     let right_expr = Expr::new(right_postfix);
 
-    let equation = Equation::new(left_expr, right_expr);
-
+    let mut equation = Equation::new(left_expr, right_expr);
     println!("{:#?}", equation);
+
+    while let Some((operation, expr)) = equation.rearrange_towards('x') {
+        println!("{} by {:?}", operation, expr);
+    }
 }
 
 

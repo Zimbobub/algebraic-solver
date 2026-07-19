@@ -19,6 +19,13 @@ pub enum Token {
 
 
 impl Token {
+    pub fn is_operator(&self) -> bool {
+        return match self {
+            Token::Number(_) | Token::Variable(_) => false,
+            _ => true
+        };
+    }
+
     pub fn precedence(&self) -> u8 {
         return match self {
             Token::Pow => 3,

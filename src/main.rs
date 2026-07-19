@@ -5,7 +5,8 @@ mod postfix;
 mod tree;
 
 fn main() {
-    let src = "a+b*c+d=2";
+    // let src = "a+b*c+d=2";
+    let src = "1+x=2";
 
     let (left_src, right_src) = src.split_once('=').expect("No equals sign");
     if right_src.contains('=') { panic!("More than one equals sign"); }
@@ -25,7 +26,7 @@ fn main() {
 
     let equation = Equation::new(left_expr, right_expr);
 
-    println!("{:?}", equation);
+    println!("{:#?}", equation);
 }
 
 

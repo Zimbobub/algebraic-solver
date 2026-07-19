@@ -1,3 +1,5 @@
+use crate::tree::{Equation, Expr};
+
 mod token;
 mod postfix;
 mod tree;
@@ -17,6 +19,13 @@ fn main() {
     let right_postfix = postfix::postfix(right_infix);
 
     println!("{} {}", left_postfix, right_postfix);
+
+    let left_expr = Expr::new(left_postfix);
+    let right_expr = Expr::new(right_postfix);
+
+    let equation = Equation::new(left_expr, right_expr);
+
+    println!("{:?}", equation);
 }
 
 

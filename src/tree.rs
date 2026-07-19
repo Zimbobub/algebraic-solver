@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::fmt::{Display, write};
 
 use crate::token::{Token, Tokens};
 
@@ -14,22 +14,28 @@ impl Equation {
         return Equation { left: Box::new(left), right: Box::new(right) };
     }
 
+    pub fn reduce_terms(&mut self) {
+        self.left.reduce_terms();
+        self.right.reduce_terms();
+    }
+
     pub fn rearrange_towards(&mut self, variable: char) -> Option<(Operation, Expr)> {
         let variable_on_right = self.search_for_variable(variable)?;
 
-        if variable_on_right {
-            match self.right {
-                Expr::BinOp(b) => {
-                    let variable_on_left = b.left.search_var(variable);
-                    match (variable_on_left, b.operation) {
-                        
-                    }
-                },
-                _ => None
-            }
-        } else {
+        // if variable_on_right {
+        //     match self.right {
+        //         Expr::BinOp(b) => {
+        //             let variable_on_left = b.left.search_var(variable);
+        //             match (variable_on_left, b.operation) {
 
-        }        
+        //             }
+        //         },
+        //         _ => None
+        //     }
+        // } else {
+
+        // }        
+        None
     }
 
     /// - none if not on left or right
@@ -45,6 +51,12 @@ impl Equation {
             (false, true) => Some(true),
             (false, false) => None
         };
+    }
+}
+
+impl Display for Equation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        return write!(f, "{} = {}", self.left, self.right)
     }
 }
 
@@ -86,6 +98,23 @@ impl Expr {
         return stack.pop().unwrap();
     }
 
+    pub fn reduce_terms(&mut self) {
+        if let Expr::BinOp(b) = self {
+            b.left.reduce_terms();
+            b.right.reduce_terms();
+            if let Expr::Int(left) = b.left.as_ref() && let Expr::Int(right) = b.right.as_ref() {
+                let value = match b.operation {
+                    Operation::Add => left + right,
+                    Operation::Sub => left - right,
+                    Operation::Mul => left * right,
+                    Operation::Div => left / right,
+                };
+
+                *self = Expr::Int(value);
+            }
+        }
+    }
+
     /// search for a variable within this expression and sub-expressions
     pub fn search_var(&self, search_term: char) -> bool {
         match self {
@@ -99,6 +128,16 @@ impl Expr {
                 return *x == search_term
             } 
         }
+    }
+}
+
+impl Display for Expr {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        return match self {
+            Expr::BinOp(b) => write!(f, "{} {} {}", b.left, b.operation, b.right),
+            Expr::Int(n) => write!(f, "{}", n),
+            Expr::Var(x) => write!(f, "{}", x)
+        };
     }
 }
 
